@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react'
 import {
   Chart as ChartJS,
@@ -24,7 +25,11 @@ ChartJS.register(
   Tooltip,
   Legend,
 )
-
+// Available labs for selection
+const AVAILABLE_LABS = ['lab-01', 'lab-02', 'lab-03', 'lab-04', 'lab-05']
+const DEFAULT_LAB = 'lab-04'
+// API target from environment variables
+const API_TARGET = import.meta.env.VITE_API_TARGET || ''
 // API response interfaces
 interface ScoreBucket {
   bucket: string
@@ -53,10 +58,6 @@ interface ChartData {
     fill?: boolean
   }[]
 }
-
-// Available labs for selection
-const AVAILABLE_LABS = ['lab-01', 'lab-02', 'lab-03', 'lab-04', 'lab-05']
-const DEFAULT_LAB = 'lab-04'
 
 // Storage key for API token (shared with App.tsx)
 const STORAGE_KEY = 'api_key'
@@ -103,10 +104,10 @@ function Dashboard() {
       try {
         // Fetch all three endpoints in parallel
         const [scoresRes, timelineRes, passRatesRes] = await Promise.all([
-          fetch(`/analytics/scores?lab=${selectedLab}`, { headers }),
-          fetch(`/analytics/timeline?lab=${selectedLab}`, { headers }),
-          fetch(`/analytics/pass-rates?lab=${selectedLab}`, { headers }),
-        ])
+		fetch(`${API_TARGET}/analytics/scores?lab=${selectedLab}`, { headers }),
+ 		fetch(`${API_TARGET}/analytics/timeline?lab=${selectedLab}`, { headers }),
+		fetch(`${API_TARGET}/analytics/pass-rates?lab=${selectedLab}`, { headers }),
+	])
 
         // Check for HTTP errors
         if (!scoresRes.ok) {
